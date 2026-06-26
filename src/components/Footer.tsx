@@ -1,5 +1,6 @@
 import { FOOTER_LINKS } from '../data';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -21,9 +22,9 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               {group.links.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-on-surface-variant hover:text-primary transition-colors">
+                  <Link to={link.href} className="text-on-surface-variant hover:text-primary transition-colors">
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

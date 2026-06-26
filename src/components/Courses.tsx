@@ -1,4 +1,5 @@
 import { COURSES } from '../data';
+import { Link } from 'react-router-dom';
 
 export default function Courses() {
   return (
@@ -31,9 +32,9 @@ export default function Courses() {
                 <p className="text-sm text-on-surface-variant line-clamp-2">
                   {course.description}
                 </p>
-                <button className="w-full mt-4 bg-transparent border border-on-surface text-on-surface text-sm font-semibold tracking-widest uppercase py-3 hover:bg-on-surface hover:text-white transition-colors duration-300">
+                <Link to={`/courses/${course.id}`} className="block text-center w-full mt-4 bg-transparent border border-on-surface text-on-surface text-sm font-semibold tracking-widest uppercase py-3 hover:bg-on-surface hover:text-white transition-colors duration-300">
                   View Details
-                </button>
+                </Link>
               </div>
             </div>
           ))}

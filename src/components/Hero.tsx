@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Hero() {
   return (
     <header className="relative w-full overflow-hidden bg-surface-container-low min-h-[85vh] flex items-center">
@@ -27,9 +29,9 @@ export default function Hero() {
           </p>
           
           <div className="pt-4">
-            <button className="bg-primary text-white text-sm font-semibold tracking-widest uppercase px-10 py-4 border border-primary transition-all duration-300 hover:bg-transparent hover:text-primary">
+            <Link to="/services" className="inline-block bg-primary text-white text-sm font-semibold tracking-widest uppercase px-10 py-4 border border-primary transition-all duration-300 hover:bg-transparent hover:text-primary">
               Explore Classes
-            </button>
+            </Link>
           </div>
         </div>
       </div>

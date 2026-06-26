@@ -7,6 +7,8 @@ export interface Course {
   description: string;
   imageUrl: string;
   altText: string;
+  ingredients: string[];
+  instructions: string[];
 }
 
 export interface Feature {
