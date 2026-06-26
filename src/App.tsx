@@ -14,6 +14,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Sitemap from './pages/Sitemap';
 import CourseDetails from './pages/CourseDetails';
+import Admin from './pages/Admin';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/book" element={<BookClass />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/lab" element={<Lab />} />
           <Route path="/private-dining" element={<PrivateDining />} />
           <Route path="/gift-vouchers" element={<GiftVouchers />} />

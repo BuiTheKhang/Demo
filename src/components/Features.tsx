@@ -1,3 +1,4 @@
+import React from 'react';
 import { ChefHat, BookOpen, Leaf } from 'lucide-react';
 import { FEATURES } from '../data';
 

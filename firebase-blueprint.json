@@ -1,0 +1,18 @@
+{
+  "collections": [
+    {
+      "name": "bookings",
+      "description": "Stores user course registrations/bookings.",
+      "rules": "allow read, write: if true;",
+      "schema": {
+        "name": "string",
+        "email": "string",
+        "phone": "string",
+        "courseId": "string",
+        "date": "string",
+        "guests": "number",
+        "createdAt": "timestamp"
+      }
+    }
+  ]
+}

@@ -1,12 +1,39 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { COURSES } from '../data';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 export default function BookClass() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError(null);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      courseId: formData.get('course'),
+      date: formData.get('date'),
+      guests: Number(formData.get('guests')),
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      email: formData.get('email'),
+      notes: formData.get('notes'),
+      createdAt: serverTimestamp(),
+    };
+
+    try {
+      await addDoc(collection(db, 'bookings'), data);
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error('Error adding booking: ', err);
+      setError('Đã xảy ra lỗi khi đặt lịch. Vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -33,9 +60,15 @@ export default function BookClass() {
       <div className="bg-surface p-8 border border-outline-variant">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 text-sm">
+              {error}
+            </div>
+          )}
+
           <div>
             <label htmlFor="course" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Select Course</label>
-            <select id="course" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer">
+            <select name="course" id="course" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer">
               <option value="">-- Choose a class --</option>
               {COURSES.map(course => (
                 <option key={course.id} value={course.id}>{course.title}</option>
@@ -46,37 +79,41 @@ export default function BookClass() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="date" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Date</label>
-              <input type="date" id="date" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" />
+              <input type="date" name="date" id="date" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" />
             </div>
             <div>
               <label htmlFor="guests" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Number of Guests</label>
-              <input type="number" id="guests" min="1" max="10" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" defaultValue="1" />
+              <input type="number" name="guests" id="guests" min="1" max="10" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" defaultValue="1" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="firstName" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">First Name</label>
-              <input type="text" id="firstName" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Jane" />
+              <input type="text" name="firstName" id="firstName" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Jane" />
             </div>
             <div>
               <label htmlFor="lastName" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Last Name</label>
-              <input type="text" id="lastName" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Doe" />
+              <input type="text" name="lastName" id="lastName" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="Doe" />
             </div>
           </div>
 
           <div>
             <label htmlFor="email" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Email Address</label>
-            <input type="email" id="email" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="jane@example.com" />
+            <input type="email" name="email" id="email" required className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="jane@example.com" />
           </div>
 
           <div>
             <label htmlFor="notes" className="block text-sm font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Dietary Requirements / Notes</label>
-            <textarea id="notes" rows={3} className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors resize-none" placeholder="Any allergies or special requests?"></textarea>
+            <textarea name="notes" id="notes" rows={3} className="w-full bg-background border border-outline-variant px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors resize-none" placeholder="Any allergies or special requests?"></textarea>
           </div>
 
-          <button type="submit" className="bg-on-surface text-background text-sm font-semibold tracking-widest uppercase px-8 py-4 transition-all hover:bg-transparent hover:text-on-surface border border-transparent hover:border-on-surface mt-4">
-            Confirm Booking
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="bg-on-surface text-background text-sm font-semibold tracking-widest uppercase px-8 py-4 transition-all hover:bg-transparent hover:text-on-surface border border-transparent hover:border-on-surface mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Processing...' : 'Confirm Booking'}
           </button>
         </form>
       </div>
